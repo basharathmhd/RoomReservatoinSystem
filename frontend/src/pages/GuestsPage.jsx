@@ -22,12 +22,15 @@ import {
   TableRow,
 } from "../components/ui/Table";
 import { Dialog } from "../components/ui/Dialog";
+import { ConfirmDialog } from "../components/ui/ConfirmDialog";
+import { toast } from "react-hot-toast";
 
 export default function GuestsPage() {
   const [guests, setGuests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ 
     firstName: "", 
@@ -96,23 +99,31 @@ export default function GuestsPage() {
     try {
       if (editing) {
         await api.updateGuest(editing.guestId, form);
+        toast.success("Guest updated successfully");
       } else {
         await api.createGuest(form);
+        toast.success("Guest created successfully");
       }
       setShowModal(false);
       loadGuests();
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || "An error occurred");
     }
   }
 
-  async function handleDelete(id) {
-    if (!confirm("Delete this guest?")) return;
+  function handleDelete(id) {
+    setConfirmDelete(id);
+  }
+
+  async function confirmDeleteAction() {
     try {
-      await api.deleteGuest(id);
+      await api.deleteGuest(confirmDelete);
+      toast.success("Guest deleted successfully");
       loadGuests();
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || "Failed to delete guest");
+    } finally {
+      setConfirmDelete(null);
     }
   }
 
@@ -251,6 +262,14 @@ export default function GuestsPage() {
           </div>
         </form>
       </Dialog>
+
+      <ConfirmDialog 
+        isOpen={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        onConfirm={confirmDeleteAction}
+        title="Delete Guest"
+        message="Are you sure you want to delete this guest? This action cannot be undone."
+      />
     </div>
   );
 }

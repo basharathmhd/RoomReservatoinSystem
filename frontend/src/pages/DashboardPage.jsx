@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { api } from "../services/api";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
 import { BedDouble, Users, CalendarCheck, DollarSign, ArrowUpRight } from "lucide-react";
 
@@ -29,26 +31,26 @@ export default function DashboardPage() {
   const [stats, setStats] = useState({ rooms: 0, guests: 0, reservations: 0 });
 
   useEffect(() => {
+    async function loadStats() {
+      try {
+        const [roomsRes, guestsRes, reservationsRes] = await Promise.allSettled([
+          api.getRooms(),
+          api.getGuests(),
+          api.getReservations(),
+        ]);
+
+        setStats({
+          rooms: roomsRes.status === 'fulfilled' ? (roomsRes.value.data?.length || 0) : 0,
+          guests: guestsRes.status === 'fulfilled' ? (guestsRes.value.data?.length || 0) : 0,
+          reservations: reservationsRes.status === 'fulfilled' ? (reservationsRes.value.data?.length || 0) : 0,
+        });
+      } catch (err) {
+        console.error('Failed to load stats:', err);
+      }
+    }
+    
     loadStats();
   }, []);
-
-  async function loadStats() {
-    try {
-      const [roomsRes, guestsRes, reservationsRes] = await Promise.allSettled([
-        api.getRooms(),
-        api.getGuests(),
-        api.getReservations(),
-      ]);
-
-      setStats({
-        rooms: roomsRes.status === 'fulfilled' ? (roomsRes.value.data?.length || 0) : 0,
-        guests: guestsRes.status === 'fulfilled' ? (guestsRes.value.data?.length || 0) : 0,
-        reservations: reservationsRes.status === 'fulfilled' ? (reservationsRes.value.data?.length || 0) : 0,
-      });
-    } catch (err) {
-      console.error('Failed to load stats:', err);
-    }
-  }
 
   return (
     <div className="space-y-6">

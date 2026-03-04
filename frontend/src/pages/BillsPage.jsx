@@ -23,6 +23,7 @@ import {
 } from "../components/ui/Table";
 import { Badge } from "../components/ui/Badge";
 import { Dialog } from "../components/ui/Dialog";
+import { toast } from "react-hot-toast";
 
 export default function BillsPage() {
   const [bills, setBills] = useState([]);
@@ -30,6 +31,7 @@ export default function BillsPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [viewingBill, setViewingBill] = useState(null);
   const [formData, setFormData] = useState({
     reservationNumber: "",
     totalAmount: "",
@@ -68,10 +70,11 @@ export default function BillsPage() {
     e.preventDefault();
     try {
       await api.createBill(formData);
+      toast.success("Bill generated successfully");
       setShowModal(false);
       loadData();
     } catch (err) {
-      alert("Failed to create bill: " + err.message);
+      toast.error("Failed to create bill: " + err.message);
     }
   }
 
@@ -172,7 +175,7 @@ export default function BillsPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" className="gap-1.5 text-xs">
+                      <Button variant="ghost" size="sm" className="gap-1.5 text-xs" onClick={() => setViewingBill(bill)}>
                         <Eye className="w-3.5 h-3.5" /> View
                       </Button>
                     </TableCell>
@@ -242,6 +245,83 @@ export default function BillsPage() {
             <Button type="submit">Create Bill</Button>
           </div>
         </form>
+      </Dialog>
+
+      <Dialog
+        isOpen={!!viewingBill}
+        onClose={() => setViewingBill(null)}
+        title="Invoice Details"
+      >
+        {viewingBill && (
+          <div className="space-y-6 print:block">
+            <div className="flex items-center justify-between border-b pb-4">
+              <div>
+                <h3 className="font-bold text-lg">Ocean View Resort</h3>
+                <p className="text-sm text-muted-foreground">123 Coastal Highway</p>
+              </div>
+              <div className="text-right">
+                <h4 className="font-bold">INVOICE</h4>
+                <p className="text-sm text-muted-foreground font-mono">{viewingBill.billId}</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-muted-foreground">Billed To Configuration:</p>
+                <p className="font-medium">Reservation: {viewingBill.reservationNumber}</p>
+                <p>Status: {viewingBill.status}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-muted-foreground">Issue Date:</p>
+                <p className="font-medium">{viewingBill.issueDate}</p>
+              </div>
+            </div>
+
+            <div className="border rounded-md overflow-hidden">
+              <Table>
+                <TableHeader className="bg-muted">
+                  <TableRow>
+                    <TableHead>Description</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Room Charges</TableCell>
+                    <TableCell className="text-right">${viewingBill.roomCharges?.toFixed(2) || '0.00'}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Service Charges</TableCell>
+                    <TableCell className="text-right">${viewingBill.serviceCharges?.toFixed(2) || '0.00'}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Discount Applied</TableCell>
+                    <TableCell className="text-right text-emerald-600">-${viewingBill.discountAmount?.toFixed(2) || '0.00'}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Subtotal</TableCell>
+                    <TableCell className="text-right font-medium">
+                       ${((viewingBill.roomCharges || 0) + (viewingBill.serviceCharges || 0) - (viewingBill.discountAmount || 0)).toFixed(2)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Tax Amount</TableCell>
+                    <TableCell className="text-right">${viewingBill.taxAmount?.toFixed(2) || '0.00'}</TableCell>
+                  </TableRow>
+                  <TableRow className="bg-muted/50">
+                    <TableCell className="font-bold">Total Final Amount</TableCell>
+                    <TableCell className="text-right font-bold text-primary">${viewingBill.finalAmount?.toFixed(2) || viewingBill.totalAmount?.toFixed(2) || '0.00'}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 print:hidden">
+              <Button variant="outline" onClick={() => window.print()}>Print Invoice</Button>
+              <Button onClick={() => setViewingBill(null)}>Close</Button>
+            </div>
+          </div>
+        )}
       </Dialog>
     </div>
   );

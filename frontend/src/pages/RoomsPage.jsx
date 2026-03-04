@@ -21,12 +21,15 @@ import {
 } from "../components/ui/Table";
 import { Badge } from "../components/ui/Badge";
 import { Dialog } from "../components/ui/Dialog";
+import { ConfirmDialog } from "../components/ui/ConfirmDialog";
+import { toast } from "react-hot-toast";
 
 export default function RoomsPage() {
   const [rooms, setRooms] = useState([]);
   const [roomTypes, setRoomTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ 
@@ -86,23 +89,31 @@ export default function RoomsPage() {
     try {
       if (editing) {
         await api.updateRoom(editing.roomId, form);
+        toast.success("Room updated successfully");
       } else {
         await api.createRoom(form);
+        toast.success("Room created successfully");
       }
       setShowModal(false);
       loadData();
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || "An error occurred");
     }
   }
 
-  async function handleDelete(id) {
-    if (!confirm("Are you sure you want to delete this room?")) return;
+  function handleDelete(id) {
+    setConfirmDelete(id);
+  }
+
+  async function confirmDeleteAction() {
     try {
-      await api.deleteRoom(id);
+      await api.deleteRoom(confirmDelete);
+      toast.success("Room deleted successfully");
       loadData();
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || "Failed to delete room");
+    } finally {
+      setConfirmDelete(null);
     }
   }
 
@@ -211,12 +222,17 @@ export default function RoomsPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Floor</label>
-              <Input 
-                type="number" 
-                required 
-                value={form.floor} 
-                onChange={e => setForm({...form, floor: e.target.value})} 
-              />
+              <select 
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                required
+                value={form.floor}
+                onChange={e => setForm({...form, floor: e.target.value})}
+              >
+                <option value="">Select Floor</option>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(f => (
+                  <option key={f} value={f}>Floor {f}</option>
+                ))}
+              </select>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Capacity</label>
@@ -257,11 +273,19 @@ export default function RoomsPage() {
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Amenities</label>
-            <Input 
-              value={form.amenities} 
-              onChange={e => setForm({...form, amenities: e.target.value})} 
-              placeholder="WiFi, AC, TV..."
-            />
+            <select 
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              value={form.amenities}
+              onChange={e => setForm({...form, amenities: e.target.value})}
+            >
+              <option value="">Select Amenities</option>
+              <option value="WiFi, AC, TV">WiFi, AC, TV</option>
+              <option value="WiFi, AC, TV, Mini Bar">WiFi, AC, TV, Mini Bar</option>
+              <option value="WiFi, AC, TV, Ocean View">WiFi, AC, TV, Ocean View</option>
+              <option value="WiFi, AC, TV, Mini Bar, Ocean View">WiFi, AC, TV, Mini Bar, Ocean View</option>
+              <option value="Basic">Basic</option>
+              <option value="None">None</option>
+            </select>
           </div>
           <div className="flex justify-end gap-3 pt-4">
             <Button type="button" variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
@@ -269,6 +293,14 @@ export default function RoomsPage() {
           </div>
         </form>
       </Dialog>
+
+      <ConfirmDialog 
+        isOpen={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        onConfirm={confirmDeleteAction}
+        title="Delete Room"
+        message="Are you sure you want to delete this room? This action cannot be undone."
+      />
     </div>
   );
 }

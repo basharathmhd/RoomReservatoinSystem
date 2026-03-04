@@ -24,6 +24,8 @@ import {
 } from "../components/ui/Table";
 import { Badge } from "../components/ui/Badge";
 import { Dialog } from "../components/ui/Dialog";
+import { ConfirmDialog } from "../components/ui/ConfirmDialog";
+import { toast } from "react-hot-toast";
 
 export default function ReservationsPage() {
   const [reservations, setReservations] = useState([]);
@@ -32,6 +34,7 @@ export default function ReservationsPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ 
     guestId: "", 
@@ -103,23 +106,31 @@ export default function ReservationsPage() {
     try {
       if (editing) {
         await api.updateReservation(editing.reservationNumber, form);
+        toast.success("Reservation updated successfully");
       } else {
         await api.createReservation(form);
+        toast.success("Reservation created successfully");
       }
       setShowModal(false);
       loadData();
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || "An error occurred");
     }
   }
 
-  async function handleDelete(id) {
-    if (!confirm("Cancel this reservation?")) return;
+  function handleDelete(id) {
+    setConfirmDelete(id);
+  }
+
+  async function confirmDeleteAction() {
     try {
-      await api.deleteReservation(id);
+      await api.deleteReservation(confirmDelete);
+      toast.success("Reservation cancelled successfully");
       loadData();
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || "Failed to cancel reservation");
+    } finally {
+      setConfirmDelete(null);
     }
   }
 
@@ -312,6 +323,14 @@ export default function ReservationsPage() {
           </div>
         </form>
       </Dialog>
+
+      <ConfirmDialog 
+        isOpen={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        onConfirm={confirmDeleteAction}
+        title="Cancel Reservation"
+        message="Are you sure you want to cancel this reservation? This action cannot be undone."
+      />
     </div>
   );
 }

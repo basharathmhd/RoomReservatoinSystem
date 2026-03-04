@@ -37,6 +37,11 @@ export const api = {
   createRoom: (data) => request('/rooms', { method: 'POST', body: JSON.stringify(data) }),
   updateRoom: (id, data) => request(`/rooms/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteRoom: (id) => request(`/rooms/${id}`, { method: 'DELETE' }),
+  getRoomTypes: () => request('/room-types'),
+  getRoomType: (id) => request(`/room-types/${id}`),
+  createRoomType: (data) => request('/room-types', { method: 'POST', body: JSON.stringify(data) }),
+  updateRoomType: (id, data) => request(`/room-types/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteRoomType: (id) => request(`/room-types/${id}`, { method: 'DELETE' }),
 
   // Guests
   getGuests: (search) => request(`/guests${search ? `?search=${encodeURIComponent(search)}` : ''}`),
@@ -60,4 +65,18 @@ export const api = {
   createUser: (data) => request('/users', { method: 'POST', body: JSON.stringify(data) }),
   updateUser: (id, data) => request(`/users/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteUser: (id) => request(`/users/${id}`, { method: 'DELETE' }),
+
+  // Bills
+  getBills: () => request('/bills'),
+  getBill: (id) => request(`/bills/${id}`),
+  createBill: (data) => request('/bills', { method: 'POST', body: JSON.stringify(data) }),
+  updateBill: (id, data) => request(`/bills/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteBill: (id) => request(`/bills/${id}`, { method: 'DELETE' }),
+
+  // Payments
+  getPayments: () => request('/payments'),
+  getPayment: (id) => request(`/payments/${id}`),
+  createPayment: (data) => request('/payments', { method: 'POST', body: JSON.stringify(data) }),
+  updatePayment: (id, data) => request(`/payments/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deletePayment: (id) => request(`/payments/${id}`, { method: 'DELETE' }),
 };

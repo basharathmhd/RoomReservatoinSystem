@@ -24,12 +24,15 @@ import {
 } from "../components/ui/Table";
 import { Badge } from "../components/ui/Badge";
 import { Dialog } from "../components/ui/Dialog";
+import { ConfirmDialog } from "../components/ui/ConfirmDialog";
+import { toast } from "react-hot-toast";
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ 
     username: "", 
@@ -92,23 +95,31 @@ export default function UsersPage() {
       
       if (editing) {
         await api.updateUser(editing.userId, data);
+        toast.success("User updated successfully");
       } else {
         await api.createUser(data);
+        toast.success("User created successfully");
       }
       setShowModal(false);
       loadUsers();
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || "An error occurred");
     }
   }
 
-  async function handleDelete(id) {
-    if (!confirm("Delete this user?")) return;
+  function handleDelete(id) {
+    setConfirmDelete(id);
+  }
+
+  async function confirmDeleteAction() {
     try {
-      await api.deleteUser(id);
+      await api.deleteUser(confirmDelete);
+      toast.success("User deleted successfully");
       loadUsers();
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || "Failed to delete user");
+    } finally {
+      setConfirmDelete(null);
     }
   }
 
@@ -263,6 +274,14 @@ export default function UsersPage() {
           </div>
         </form>
       </Dialog>
+
+      <ConfirmDialog 
+        isOpen={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        onConfirm={confirmDeleteAction}
+        title="Delete User"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+      />
     </div>
   );
 }

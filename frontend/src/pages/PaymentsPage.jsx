@@ -24,6 +24,7 @@ import {
 } from "../components/ui/Table";
 import { Badge } from "../components/ui/Badge";
 import { Dialog } from "../components/ui/Dialog";
+import { toast } from "react-hot-toast";
 
 export default function PaymentsPage() {
   const [payments, setPayments] = useState([]);
@@ -68,10 +69,11 @@ export default function PaymentsPage() {
     e.preventDefault();
     try {
       await api.createPayment(formData);
+      toast.success("Payment processed successfully");
       setShowModal(false);
       loadData();
     } catch (err) {
-      alert("Failed to process payment: " + err.message);
+      toast.error("Failed to process payment: " + err.message);
     }
   }
 
