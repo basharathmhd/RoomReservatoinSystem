@@ -15,14 +15,18 @@ import {
   CreditCard,
   Settings,
   Bell,
-  Search
+  Search,
+  Sun,
+  Moon
 } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
+import { useTheme } from "../../context/ThemeContext";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/rooms", icon: BedDouble, label: "Rooms" },
+  { to: "/room-types", icon: BedDouble, label: "Room Types" },
   { to: "/guests", icon: Users, label: "Guests" },
   { to: "/reservations", icon: CalendarCheck, label: "Reservations" },
   { to: "/bills", icon: Receipt, label: "Bills" },
@@ -33,6 +37,7 @@ const navItems = [
 
 export default function DashboardLayout() {
   const { user, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -138,6 +143,9 @@ export default function DashboardLayout() {
           </div>
 
           <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="relative group" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+              {theme === "dark" ? <Sun className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" /> : <Moon className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />}
+            </Button>
             <Button variant="ghost" size="icon" className="relative group">
               <Bell className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-destructive rounded-full border-2 border-card" />

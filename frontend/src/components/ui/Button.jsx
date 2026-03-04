@@ -1,5 +1,4 @@
 import * as React from "react"
-import { slot } from "lucide-react"
 
 const Button = React.forwardRef(({ className, variant = "default", size = "default", ...props }, ref) => {
   const variants = {

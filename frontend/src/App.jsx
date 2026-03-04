@@ -4,6 +4,7 @@ import DashboardLayout from "./components/layout/DashboardLayout";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import RoomsPage from "./pages/RoomsPage";
+import RoomTypesPage from "./pages/RoomTypesPage";
 import GuestsPage from "./pages/GuestsPage";
 import ReservationsPage from "./pages/ReservationsPage";
 import UsersPage from "./pages/UsersPage";
@@ -32,6 +33,7 @@ function App() {
       }>
         <Route index element={<DashboardPage />} />
         <Route path="rooms" element={<RoomsPage />} />
+        <Route path="room-types" element={<RoomTypesPage />} />
         <Route path="guests" element={<GuestsPage />} />
         <Route path="reservations" element={<ReservationsPage />} />
         <Route path="bills" element={<BillsPage />} />
