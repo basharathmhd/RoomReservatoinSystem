@@ -92,6 +92,68 @@ public class PaymentServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String pathInfo = request.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                sendError(response, "Payment ID required");
+                return;
+            }
+
+            String id = pathInfo.substring(1);
+            Payment existing = paymentDAO.findById(id);
+            if (existing == null) {
+                sendError(response, "Payment not found");
+                return;
+            }
+
+            String body = getRequestBody(request);
+
+            String status = extractJsonValue(body, "status");
+            if (status != null)
+                existing.setStatus(status);
+
+            String remarks = extractJsonValue(body, "remarks");
+            if (remarks != null)
+                existing.setRemarks(remarks);
+
+            boolean success = paymentDAO.update(existing);
+            if (success) {
+                sendResponse(response, JSONUtil.createSuccessResponse("Payment updated", existing));
+            } else {
+                sendError(response, "Failed to update payment");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendError(response, "Error updating payment: " + e.getMessage());
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String pathInfo = request.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                sendError(response, "Payment ID required");
+                return;
+            }
+
+            String id = pathInfo.substring(1);
+            boolean success = paymentDAO.delete(id);
+            if (success) {
+                sendResponse(response, JSONUtil.createSuccessResponse("Payment deleted", null));
+            } else {
+                sendError(response, "Payment not found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendError(response, "Error deleting payment: " + e.getMessage());
+        }
+    }
+
     private String getRequestBody(HttpServletRequest request) throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader reader = request.getReader();

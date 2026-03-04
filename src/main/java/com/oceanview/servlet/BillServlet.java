@@ -91,6 +91,68 @@ public class BillServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String pathInfo = request.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                sendError(response, "Bill ID required");
+                return;
+            }
+
+            String id = pathInfo.substring(1);
+            Bill existing = billDAO.findById(id);
+            if (existing == null) {
+                sendError(response, "Bill not found");
+                return;
+            }
+
+            String body = getRequestBody(request);
+
+            String status = extractJsonValue(body, "status");
+            if (status != null)
+                existing.setPaymentStatus(status);
+
+            String notes = extractJsonValue(body, "notes");
+            if (notes != null)
+                existing.setNotes(notes);
+
+            boolean success = billDAO.update(existing);
+            if (success) {
+                sendResponse(response, JSONUtil.createSuccessResponse("Bill updated", existing));
+            } else {
+                sendError(response, "Failed to update bill");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendError(response, "Error updating bill: " + e.getMessage());
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String pathInfo = request.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                sendError(response, "Bill ID required");
+                return;
+            }
+
+            String id = pathInfo.substring(1);
+            boolean success = billDAO.delete(id);
+            if (success) {
+                sendResponse(response, JSONUtil.createSuccessResponse("Bill deleted", null));
+            } else {
+                sendError(response, "Bill not found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendError(response, "Error deleting bill: " + e.getMessage());
+        }
+    }
+
     private String getRequestBody(HttpServletRequest request) throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader reader = request.getReader();

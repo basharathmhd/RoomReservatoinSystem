@@ -83,6 +83,80 @@ public class RoomTypeServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String pathInfo = request.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                sendError(response, "Room Type ID required");
+                return;
+            }
+
+            String id = pathInfo.substring(1);
+            RoomType existing = roomTypeDAO.findById(id);
+            if (existing == null) {
+                sendError(response, "Room type not found");
+                return;
+            }
+
+            String body = getRequestBody(request);
+
+            String typeName = extractJsonValue(body, "typeName");
+            if (typeName != null)
+                existing.setTypeName(typeName);
+
+            String rateStr = extractJsonValue(body, "baseRate");
+            if (rateStr != null)
+                existing.setBaseRate(Double.parseDouble(rateStr));
+
+            String desc = extractJsonValue(body, "description");
+            if (desc != null)
+                existing.setDescription(desc);
+
+            String occStr = extractJsonValue(body, "maxOccupancy");
+            if (occStr != null)
+                existing.setMaxOccupancy(Integer.parseInt(occStr));
+
+            String amenities = extractJsonValue(body, "amenities");
+            if (amenities != null)
+                existing.setAmenities(amenities);
+
+            boolean success = roomTypeDAO.update(existing);
+            if (success) {
+                sendResponse(response, JSONUtil.createSuccessResponse("Room type updated", existing));
+            } else {
+                sendError(response, "Failed to update room type");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendError(response, "Error updating room type: " + e.getMessage());
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String pathInfo = request.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                sendError(response, "Room Type ID required");
+                return;
+            }
+
+            String id = pathInfo.substring(1);
+            boolean success = roomTypeDAO.delete(id);
+            if (success) {
+                sendResponse(response, JSONUtil.createSuccessResponse("Room type deleted", null));
+            } else {
+                sendError(response, "Room type not found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendError(response, "Error deleting room type: " + e.getMessage());
+        }
+    }
+
     private String getRequestBody(HttpServletRequest request) throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader reader = request.getReader();
