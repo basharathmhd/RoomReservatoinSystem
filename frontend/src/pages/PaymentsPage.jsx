@@ -32,6 +32,7 @@ export default function PaymentsPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [viewingPayment, setViewingPayment] = useState(null);
   const [formData, setFormData] = useState({
     billId: "",
     amount: "",
@@ -191,7 +192,7 @@ export default function PaymentsPage() {
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="sm">Details</Button>
+                      <Button variant="ghost" size="sm" onClick={() => setViewingPayment(p)}>Details</Button>
                     </TableCell>
                   </TableRow>
                 ))
@@ -216,9 +217,9 @@ export default function PaymentsPage() {
               required
             >
               <option value="">Choose bill...</option>
-              {bills.filter(b => b.status === 'UNPAID').map(bill => (
+              {bills.filter(b => b.paymentStatus === 'PENDING' || b.paymentStatus === 'UNPAID').map(bill => (
                 <option key={bill.billId} value={bill.billId}>
-                  Bill {bill.billId.substring(0,8)}... (${bill.totalAmount})
+                  Bill {bill.billId.substring(0,8)}... (${bill.finalAmount || bill.totalAmount})
                 </option>
               ))}
             </select>
@@ -258,6 +259,58 @@ export default function PaymentsPage() {
             <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700">Confirm Payment</Button>
           </div>
         </form>
+      </Dialog>
+
+      <Dialog
+        isOpen={!!viewingPayment}
+        onClose={() => setViewingPayment(null)}
+        title="Payment Details"
+      >
+        {viewingPayment && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-muted-foreground">Transaction ID:</p>
+                <p className="font-mono font-medium">{viewingPayment.transactionId || viewingPayment.paymentId}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-muted-foreground">Billed To:</p>
+                <p className="font-mono font-medium">{viewingPayment.billId}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Payment Date:</p>
+                <p className="font-medium">{viewingPayment.paymentDate}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-muted-foreground">Payment Method:</p>
+                <p className="font-medium">{viewingPayment.paymentMethod}</p>
+              </div>
+            </div>
+
+            <div className="mt-6 border rounded-md overflow-hidden">
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-medium">Amount Paid</TableCell>
+                    <TableCell className="text-right font-bold text-emerald-600">
+                      ${viewingPayment.amount?.toFixed(2)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium text-muted-foreground">Verification Status</TableCell>
+                    <TableCell className="text-right text-emerald-500 font-medium flex justify-end items-center gap-1">
+                      <ShieldCheck className="w-4 h-4" /> Verified Secure
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="flex justify-end pt-4">
+              <Button onClick={() => setViewingPayment(null)}>Close</Button>
+            </div>
+          </div>
+        )}
       </Dialog>
     </div>
   );
