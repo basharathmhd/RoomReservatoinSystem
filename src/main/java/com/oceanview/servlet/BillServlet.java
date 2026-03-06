@@ -61,15 +61,19 @@ public class BillServlet extends HttpServlet {
             bill.setReservationNumber(extractJsonValue(body, "reservationNumber"));
 
             String rcStr = extractJsonValue(body, "roomCharges");
-            if (rcStr != null)
+            if (rcStr != null && !rcStr.isEmpty())
                 bill.setRoomCharges(Double.parseDouble(rcStr));
 
             String scStr = extractJsonValue(body, "serviceCharges");
-            if (scStr != null)
+            if (scStr != null && !scStr.isEmpty())
                 bill.setServiceCharges(Double.parseDouble(scStr));
 
+            String taStr = extractJsonValue(body, "taxAmount");
+            if (taStr != null && !taStr.isEmpty())
+                bill.setTaxAmount(Double.parseDouble(taStr));
+
             String daStr = extractJsonValue(body, "discountAmount");
-            if (daStr != null)
+            if (daStr != null && !daStr.isEmpty())
                 bill.setDiscountAmount(Double.parseDouble(daStr));
 
             bill.calculateTotalAmount();

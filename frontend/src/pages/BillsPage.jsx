@@ -34,9 +34,11 @@ export default function BillsPage() {
   const [viewingBill, setViewingBill] = useState(null);
   const [formData, setFormData] = useState({
     reservationNumber: "",
-    totalAmount: "",
+    roomCharges: "",
+    serviceCharges: "",
     taxAmount: "",
-    otherCharges: "",
+    discountAmount: "",
+    notes: "",
     status: "UNPAID",
     issueDate: new Date().toISOString().split('T')[0]
   });
@@ -226,19 +228,28 @@ export default function BillsPage() {
               </select>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-4 border-t pt-4">
+          <div className="grid grid-cols-2 gap-4 border-t pt-4">
             <div className="space-y-1">
-              <label className="text-xs font-medium text-muted-foreground uppercase">Base Amount</label>
-              <Input type="number" step="0.01" required value={formData.totalAmount} onChange={e => setFormData({...formData, totalAmount: e.target.value})} />
+              <label className="text-xs font-medium text-muted-foreground uppercase">Room Charges</label>
+              <Input type="number" step="0.01" required value={formData.roomCharges} onChange={e => setFormData({...formData, roomCharges: e.target.value})} />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-muted-foreground uppercase">Tax</label>
-              <Input type="number" step="0.01" value={formData.taxAmount} onChange={e => setFormData({...formData, taxAmount: e.target.value})} />
+              <label className="text-xs font-medium text-muted-foreground uppercase">Service Charges</label>
+              <Input type="number" step="0.01" value={formData.serviceCharges} onChange={e => setFormData({...formData, serviceCharges: e.target.value})} />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-muted-foreground uppercase">Other</label>
-              <Input type="number" step="0.01" value={formData.otherCharges} onChange={e => setFormData({...formData, otherCharges: e.target.value})} />
+              <label className="text-xs font-medium text-muted-foreground uppercase">Discount</label>
+              <Input type="number" step="0.01" value={formData.discountAmount} onChange={e => setFormData({...formData, discountAmount: e.target.value})} />
             </div>
+          </div>
+          <div className="space-y-2 pt-2">
+            <label className="text-sm font-medium">Notes</label>
+            <textarea 
+              className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              value={formData.notes} 
+              onChange={e => setFormData({...formData, notes: e.target.value})} 
+              placeholder="Any additional billing notes..."
+            />
           </div>
           <div className="flex justify-end gap-3 pt-4">
             <Button type="button" variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
