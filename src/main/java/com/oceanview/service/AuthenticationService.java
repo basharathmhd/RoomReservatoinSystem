@@ -6,9 +6,7 @@ import com.oceanview.util.PasswordUtil;
 
 import java.sql.SQLException;
 
-/**
- * Service class for authentication operations
- */
+
 public class AuthenticationService {
     private UserDAO userDAO;
 
@@ -16,9 +14,7 @@ public class AuthenticationService {
         this.userDAO = new UserDAO();
     }
 
-    /**
-     * Authenticate user with username and password
-     */
+   
     public User login(String username, String password) {
         try {
             User user = userDAO.findByUsername(username);
@@ -38,17 +34,13 @@ public class AuthenticationService {
         }
     }
 
-    /**
-     * Logout user
-     */
+  
     public void logout(String userId) {
-        // Log the logout action if needed
+        
         System.out.println("User " + userId + " logged out");
     }
 
-    /**
-     * Change user password
-     */
+    
     public boolean changePassword(String userId, String oldPassword, String newPassword) {
         try {
             User user = userDAO.findById(userId);
@@ -66,9 +58,7 @@ public class AuthenticationService {
         }
     }
 
-    /**
-     * Validate session token
-     */
+    
     public boolean validateSession(String userId) {
         try {
             User user = userDAO.findById(userId);

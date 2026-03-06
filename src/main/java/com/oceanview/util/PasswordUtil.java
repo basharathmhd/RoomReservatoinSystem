@@ -5,18 +5,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-/**
- * Utility class for password hashing and verification
- * Uses SHA-256 with salt for secure password storage
- */
+
 public class PasswordUtil {
 
     private static final String ALGORITHM = "SHA-256";
     private static final int SALT_LENGTH = 16;
 
-    /**
-     * Generate a random salt
-     */
+    
     public static String generateSalt() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[SALT_LENGTH];
@@ -24,9 +19,7 @@ public class PasswordUtil {
         return Base64.getEncoder().encodeToString(salt);
     }
 
-    /**
-     * Hash password with salt
-     */
+    
     public static String hashPassword(String password, String salt) {
         try {
             MessageDigest md = MessageDigest.getInstance(ALGORITHM);
@@ -38,19 +31,14 @@ public class PasswordUtil {
         }
     }
 
-    /**
-     * Hash password with auto-generated salt
-     * Returns salt:hash format
-     */
+    
     public static String hashPassword(String password) {
         String salt = generateSalt();
         String hash = hashPassword(password, salt);
         return salt + ":" + hash;
     }
 
-    /**
-     * Verify password against stored hash
-     */
+   
     public static boolean verifyPassword(String password, String storedHash) {
         if (storedHash == null || !storedHash.contains(":")) {
             return false;
@@ -68,9 +56,7 @@ public class PasswordUtil {
         return hash.equals(testHash);
     }
 
-    /**
-     * Check password strength
-     */
+    
     public static boolean isStrongPassword(String password) {
         if (password == null || password.length() < 8) {
             return false;

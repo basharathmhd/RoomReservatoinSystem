@@ -10,6 +10,7 @@ import ReservationsPage from "./pages/ReservationsPage";
 import UsersPage from "./pages/UsersPage";
 import BillsPage from "./pages/BillsPage";
 import PaymentsPage from "./pages/PaymentsPage";
+import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
 
 function ProtectedRoute({ children }) {
@@ -39,6 +40,7 @@ function App() {
         <Route path="bills" element={<BillsPage />} />
         <Route path="payments" element={<PaymentsPage />} />
         <Route path="users" element={<UsersPage />} />
+        <Route path="reports" element={<ReportsPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
       

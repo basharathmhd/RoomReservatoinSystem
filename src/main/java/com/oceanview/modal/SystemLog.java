@@ -3,9 +3,6 @@ package com.oceanview.modal;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * SystemLog entity for audit trail
- */
 public class SystemLog implements Serializable {
     private static final long serialVersionUID = 1L;
 

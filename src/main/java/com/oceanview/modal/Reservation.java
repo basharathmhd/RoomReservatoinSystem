@@ -5,9 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-/**
- * Reservation entity representing room bookings
- */
 public class Reservation implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -6,10 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 
-/**
- * Utility class for JSON serialization/deserialization
- * Manual implementation without external libraries
- */
+
 public class JSONUtil {
 
     private static final DateTimeFormatter DATE_FORMATTER =
@@ -17,9 +14,6 @@ public class JSONUtil {
     private static final DateTimeFormatter DATETIME_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-    /**
-     * Convert object to JSON string
-     */
     public static String toJSON(Object obj) {
         if (obj == null) {
             return "null";
@@ -49,9 +43,7 @@ public class JSONUtil {
         return objectToJSON(obj);
     }
 
-    /**
-     * Convert collection to JSON array
-     */
+   
     private static String collectionToJSON(Collection<?> collection) {
         StringBuilder json = new StringBuilder("[");
         boolean first = true;
@@ -68,9 +60,7 @@ public class JSONUtil {
         return json.toString();
     }
 
-    /**
-     * Convert object to JSON using reflection
-     */
+  
     private static String objectToJSON(Object obj) {
         StringBuilder json = new StringBuilder("{");
         boolean first = true;
@@ -110,9 +100,7 @@ public class JSONUtil {
         return json.toString();
     }
 
-    /**
-     * Escape special characters in JSON strings
-     */
+    
     private static String escapeJSON(String str) {
         if (str == null) {
             return "";
@@ -125,9 +113,7 @@ public class JSONUtil {
                 .replace("\t", "\\t");
     }
 
-    /**
-     * Create JSON response object
-     */
+    
     public static String createResponse(boolean success, String message, Object data) {
         StringBuilder json = new StringBuilder("{");
         json.append("\"success\":").append(success).append(",");
@@ -141,16 +127,12 @@ public class JSONUtil {
         return json.toString();
     }
 
-    /**
-     * Create error response
-     */
+   
     public static String createErrorResponse(String message) {
         return createResponse(false, message, null);
     }
 
-    /**
-     * Create success response
-     */
+   
     public static String createSuccessResponse(String message, Object data) {
         return createResponse(true, message, data);
     }

@@ -46,6 +46,8 @@ export default function ReservationsPage() {
     status: "CONFIRMED" 
   });
 
+  const today = new Date().toISOString().split('T')[0];
+
   useEffect(() => {
     loadData();
   }, []);
@@ -282,11 +284,11 @@ export default function ReservationsPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Check-in Date</label>
-              <Input type="date" required value={form.checkInDate} onChange={e => setForm({...form, checkInDate: e.target.value})} />
+              <Input type="date" required min={today} value={form.checkInDate} onChange={e => setForm({...form, checkInDate: e.target.value})} />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Check-out Date</label>
-              <Input type="date" required value={form.checkOutDate} onChange={e => setForm({...form, checkOutDate: e.target.value})} />
+              <Input type="date" required min={form.checkInDate || today} value={form.checkOutDate} onChange={e => setForm({...form, checkOutDate: e.target.value})} />
             </div>
           </div>
           <div className="space-y-2">

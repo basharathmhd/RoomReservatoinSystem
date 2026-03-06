@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-/**
- * Guest entity representing hotel guests
- */
 public class Guest implements Serializable {
     private static final long serialVersionUID = 1L;
 

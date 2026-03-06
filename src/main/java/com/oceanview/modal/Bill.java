@@ -3,9 +3,7 @@ package com.oceanview.modal;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * Bill entity representing guest invoices
- */
+
 public class Bill implements Serializable {
     private static final long serialVersionUID = 1L;
 

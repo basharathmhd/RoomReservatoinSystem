@@ -2,9 +2,7 @@ package com.oceanview.modal;
 
 import java.io.Serializable;
 
-/**
- * Room entity representing individual hotel rooms
- */
+
 public class Room implements Serializable {
     private static final long serialVersionUID = 1L;
 

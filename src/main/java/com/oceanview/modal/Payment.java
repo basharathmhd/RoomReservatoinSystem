@@ -3,9 +3,7 @@ package com.oceanview.modal;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * Payment entity representing payment transactions
- */
+
 public class Payment implements Serializable {
     private static final long serialVersionUID = 1L;
 

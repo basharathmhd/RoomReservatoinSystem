@@ -88,6 +88,11 @@ public class ReservationServlet extends HttpServlet {
             LocalDate checkIn = LocalDate.parse(checkInStr);
             LocalDate checkOut = LocalDate.parse(checkOutStr);
 
+            if (checkIn.isBefore(LocalDate.now())) {
+                sendError(response, "Check-in date cannot be in the past");
+                return;
+            }
+
             // Check availability first
             boolean available = reservationDAO.checkAvailability(roomId, checkIn, checkOut);
             if (!available) {

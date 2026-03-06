@@ -17,11 +17,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.UUID;
 
-/**
- * Servlet handling authentication operations
- * Endpoints: POST /api/auth/login, POST /api/auth/logout, POST
- * /api/auth/register, GET /api/auth/validate
- */
+
 @WebServlet(name = "AuthServlet", urlPatterns = { "/api/auth/*" })
 public class AuthServlet extends HttpServlet {
 

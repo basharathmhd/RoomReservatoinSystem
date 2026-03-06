@@ -6,9 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * CORS Filter to allow cross-origin requests from frontend
- */
+
 @WebFilter("/*")
 public class CORSFilter implements Filter {
 

@@ -17,7 +17,8 @@ import {
   Bell,
   Search,
   Sun,
-  Moon
+  Moon,
+  PieChart
 } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
@@ -32,6 +33,7 @@ const navItems = [
   { to: "/bills", icon: Receipt, label: "Bills" },
   { to: "/payments", icon: CreditCard, label: "Payments" },
   { to: "/users", icon: UserCog, label: "Users" },
+  { to: "/reports", icon: PieChart, label: "Reports" },
   { to: "/settings", icon: Settings, label: "Settings" },
 ];
 

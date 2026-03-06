@@ -56,7 +56,7 @@ public abstract class BaseDAO<T> {
             conn = getConnection();
             pstmt = conn.prepareStatement(sql);
 
-            // Set parameters
+           
             for (int i = 0; i < params.length; i++) {
                 pstmt.setObject(i + 1, params[i]);
             }
@@ -67,18 +67,14 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    /**
-     * Execute query and return single result
-     */
+    
     protected T executeQuerySingle(String sql, RowMapper<T> mapper, Object... params)
             throws SQLException {
         List<T> results = executeQuery(sql, mapper, params);
         return results.isEmpty() ? null : results.get(0);
     }
 
-    /**
-     * Execute query and return list of results
-     */
+ 
     protected List<T> executeQuery(String sql, RowMapper<T> mapper, Object... params)
             throws SQLException {
         Connection conn = null;
@@ -90,7 +86,7 @@ public abstract class BaseDAO<T> {
             conn = getConnection();
             pstmt = conn.prepareStatement(sql);
 
-            // Set parameters
+            
             for (int i = 0; i < params.length; i++) {
                 pstmt.setObject(i + 1, params[i]);
             }
@@ -107,9 +103,7 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    /**
-     * Check if record exists
-     */
+    
     protected boolean exists(String sql, Object... params) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -154,18 +148,14 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    /**
-     * Abstract methods to be implemented by subclasses
-     */
+   
     public abstract T findById(String id) throws SQLException;
     public abstract List<T> findAll() throws SQLException;
     public abstract boolean insert(T entity) throws SQLException;
     public abstract boolean update(T entity) throws SQLException;
     public abstract boolean delete(String id) throws SQLException;
 
-    /**
-     * Functional interface for row mapping
-     */
+  
     @FunctionalInterface
     protected interface RowMapper<T> {
         T mapRow(ResultSet rs) throws SQLException;

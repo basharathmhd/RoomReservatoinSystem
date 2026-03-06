@@ -79,4 +79,7 @@ export const api = {
   createPayment: (data) => request('/payments', { method: 'POST', body: JSON.stringify(data) }),
   updatePayment: (id, data) => request(`/payments/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deletePayment: (id) => request(`/payments/${id}`, { method: 'DELETE' }),
+
+  // Reports
+  getReports: () => request('/reports'),
 };

@@ -15,6 +15,14 @@ export default function LoginPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
+
+    // Username input sanitization
+    const strictAlphanumeric = /^[a-zA-Z0-9]+$/;
+    if (!strictAlphanumeric.test(username)) {
+      setError('Username cannot contain special characters or spaces');
+      return;
+    }
+
     setLoading(true);
 
     try {
